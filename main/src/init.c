@@ -58,6 +58,12 @@ void system_init()
 
     tcpip_adapter_init();
 
+    //设置时区为中国
+    // Set timezone to China Standard Time
+    setenv("TZ", "CST-8", 1);
+    tzset();
+
+
     wifi_station_init();
 
 }

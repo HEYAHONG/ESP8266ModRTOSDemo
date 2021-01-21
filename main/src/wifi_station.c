@@ -8,6 +8,36 @@ static int s_retry_num = 0;
 EventGroupHandle_t s_wifi_station_event_group;
 
 
+static void initialize_sntp(void)
+{
+    ESP_LOGI(TAG, "Initializing SNTP");
+    sntp_setoperatingmode(SNTP_OPMODE_POLL);
+    sntp_setservername(0, "pool.ntp.org");
+    sntp_init();
+}
+
+static void obtain_time(void)
+{
+    initialize_sntp();
+
+    // wait for time to be set
+    time_t now = 0;
+    struct tm timeinfo = { 0 };
+    int retry = 0;
+    const int retry_count = 10;
+
+    while (timeinfo.tm_year < (2016 - 1900) && ++retry < retry_count) {
+        ESP_LOGI(TAG, "Waiting for system time to be set... (%d/%d)", retry, retry_count);
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        time(&now);
+        localtime_r(&now, &timeinfo);
+    }
+
+    ESP_LOGI(TAG,"time now: %s",asctime(localtime(&now)));
+}
+
+
+
 static void save_wifi_station_config()
 {
     FILE* f = fopen("/spiffs/wifistationconfig.bin", "wb");
@@ -108,6 +138,7 @@ void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
                  ip4addr_ntoa(&event->ip_info.ip));
         s_retry_num = 0;
         xEventGroupSetBits(s_wifi_station_event_group, WIFI_CONNECTED_BIT);
+        obtain_time();//同步时间
     }
 }
 

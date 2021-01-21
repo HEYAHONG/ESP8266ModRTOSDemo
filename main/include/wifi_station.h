@@ -15,6 +15,7 @@
 #include "lwip/err.h"
 #include "lwip/sys.h"
 #include "string.h"
+#include "lwip/apps/sntp.h"
 
 #define WIFI_STATION_SSID "Test"
 #define WIFI_STATION_PASSWORD "12345678"
