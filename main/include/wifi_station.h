@@ -16,7 +16,7 @@
 #include "lwip/sys.h"
 #include "string.h"
 #include "lwip/apps/sntp.h"
-
+#include "stdbool.h"
 #define WIFI_STATION_SSID "Test"
 #define WIFI_STATION_PASSWORD "12345678"
 
@@ -33,6 +33,8 @@ void wifi_station_init();
 void wifi_station_setconfig(const wifi_config_t *cfg);
 
 const wifi_config_t * wifi_station_getconfig();
+
+bool wifi_station_isconnected();
 
 void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
                                 int32_t event_id, void* event_data);

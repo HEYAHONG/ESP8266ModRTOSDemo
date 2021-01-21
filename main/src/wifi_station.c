@@ -1,5 +1,5 @@
 #include "wifi_station.h"
-
+#include "stdbool.h"
 //WIFI SSID 及 Password缓存
 static wifi_config_t wifi_config = {0};
 static const char *TAG = "wifi station";
@@ -8,11 +8,19 @@ static int s_retry_num = 0;
 EventGroupHandle_t s_wifi_station_event_group;
 
 
+static bool IsConnect=false;
+
+bool wifi_station_isconnected()
+{
+    return IsConnect;
+}
+
 static void initialize_sntp(void)
 {
     ESP_LOGI(TAG, "Initializing SNTP");
     sntp_setoperatingmode(SNTP_OPMODE_POLL);
-    sntp_setservername(0, "pool.ntp.org");
+    sntp_setservername(0,"pool.ntp.org");
+    sntp_setservername(1,"ntp.ntsc.ac.cn");
     sntp_init();
 }
 
@@ -119,6 +127,7 @@ void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
     }
     else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED)
     {
+        IsConnect=false;
         if (s_retry_num < 100)
         {
             esp_wifi_connect();
@@ -138,7 +147,9 @@ void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
                  ip4addr_ntoa(&event->ip_info.ip));
         s_retry_num = 0;
         xEventGroupSetBits(s_wifi_station_event_group, WIFI_CONNECTED_BIT);
+        IsConnect=true;
         obtain_time();//同步时间
+
     }
 }
 
