@@ -1,4 +1,5 @@
 #include "init.h"
+#include "wifi_station.h"
 
 static const char *TAG = "esp8266 init";
 
@@ -45,6 +46,8 @@ static void  deinit_spiffs()
     ESP_LOGI(TAG, "SPIFFS unmounted");
 }
 
+
+
 void system_init()
 {
     init_spiffs();
@@ -52,6 +55,11 @@ void system_init()
     ESP_ERROR_CHECK(nvs_flash_init());
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
+
+    tcpip_adapter_init();
+
+    wifi_station_init();
+
 }
 
 void system_deinit()
