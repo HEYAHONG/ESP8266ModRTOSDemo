@@ -15,18 +15,11 @@ bool wifi_station_isconnected()
     return IsConnect;
 }
 
-static void initialize_sntp(void)
-{
-    ESP_LOGI(TAG, "Initializing SNTP");
-    sntp_setoperatingmode(SNTP_OPMODE_POLL);
-    sntp_setservername(0,"pool.ntp.org");
-    sntp_setservername(1,"ntp.ntsc.ac.cn");
-    sntp_init();
-}
+
 
 static void obtain_time(void)
 {
-    initialize_sntp();
+    //initialize_sntp();
 
     // wait for time to be set
     time_t now = 0;

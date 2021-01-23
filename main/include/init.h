@@ -17,6 +17,7 @@
 #include "esp_err.h"
 #include "esp_log.h"
 #include "esp_spiffs.h"
+#include "lwip/apps/sntp.h"
 
 #define INIT_MAX_WAIT_HIT 4
 

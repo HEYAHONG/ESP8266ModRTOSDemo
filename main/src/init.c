@@ -65,6 +65,15 @@ static void  waitforhit()
 
 }
 
+static void initialize_sntp(void)
+{
+    ESP_LOGI(TAG, "Initializing SNTP");
+    sntp_setoperatingmode(SNTP_OPMODE_POLL);
+    sntp_setservername(0,"pool.ntp.org");
+    sntp_setservername(1,"ntp.ntsc.ac.cn");
+    sntp_init();
+}
+
 void system_init()
 {
     init_spiffs();
@@ -75,6 +84,7 @@ void system_init()
 
     tcpip_adapter_init();
 
+    initialize_sntp();
     //设置时区为中国
     // Set timezone to China Standard Time
     setenv("TZ", "CST-8", 1);
