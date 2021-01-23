@@ -18,6 +18,8 @@
 #include "esp_log.h"
 #include "esp_spiffs.h"
 
+#define INIT_MAX_WAIT_HIT 4
+
 void system_init();
 
 #endif // INIT_H_INCLUDED

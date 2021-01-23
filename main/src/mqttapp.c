@@ -102,10 +102,17 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 
 void mqtt_app_set_uri(char *uri,size_t length)
 {
+    memset(default_mqtt_uri,0,sizeof(default_mqtt_uri));
     memcpy(default_mqtt_uri,uri,length>sizeof(default_mqtt_uri)?sizeof(default_mqtt_uri):length);
     save_mqtt_app_config();
     if(client!=0)
         esp_mqtt_set_config(client,&mqtt_cfg);
+}
+
+const char *  mqtt_app_get_uri()
+{
+    load_mqtt_app_config();
+    return (char *)default_mqtt_uri;
 }
 
 void mqtt_app_start(void)

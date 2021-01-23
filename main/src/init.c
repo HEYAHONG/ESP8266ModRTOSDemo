@@ -1,5 +1,6 @@
 #include "init.h"
 #include "wifi_station.h"
+#include "appcmd.h"
 
 static const char *TAG = "esp8266 init";
 
@@ -46,7 +47,23 @@ static void  deinit_spiffs()
     ESP_LOGI(TAG, "SPIFFS unmounted");
 }
 
+//等待按键按下
+static void  waitforhit()
+{
+    int count = 0;
+    while(count++ <INIT_MAX_WAIT_HIT)
+    {
+         ESP_LOGI(TAG, "hit any key to change settings(%d/%d)",count,INIT_MAX_WAIT_HIT);
+         vTaskDelay(1000 / portTICK_PERIOD_MS);
+         if(getchar_unlocked()>0)
+         {
+             ESP_LOGI(TAG, "key hit");//按下按键进入配置模式
+             enter_app_cmd();
+             break;
+         }
+    }
 
+}
 
 void system_init()
 {
@@ -63,8 +80,7 @@ void system_init()
     setenv("TZ", "CST-8", 1);
     tzset();
 
-
-    wifi_station_init();
+    waitforhit();
 
 }
 

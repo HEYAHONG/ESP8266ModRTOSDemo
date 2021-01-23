@@ -32,7 +32,7 @@ void wifi_station_init();
 
 void wifi_station_setconfig(const wifi_config_t *cfg);
 
-const wifi_config_t * wifi_station_getconfig();
+wifi_config_t * wifi_station_getconfig();
 
 bool wifi_station_isconnected();
 

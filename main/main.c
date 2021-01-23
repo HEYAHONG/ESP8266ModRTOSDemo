@@ -10,13 +10,15 @@
 #include "init.h"
 #include "wifi_station.h"
 #include "mqttapp.h"
+#include "wifi_station.h"
 
 static const char *TAG = "esp8266 main";
 
-void app_main(void)
+static void main_task()
 {
-
     system_init();
+
+    wifi_station_init();
 
     while(!wifi_station_isconnected())
     {
@@ -26,4 +28,13 @@ void app_main(void)
 
     mqtt_app_start();
 
+    while(1)
+    {
+         vTaskDelay(2000 / portTICK_PERIOD_MS);
+    }
+}
+
+void app_main(void)
+{
+xTaskCreate(main_task, "main_task", 4096, NULL, 10, NULL);
 }

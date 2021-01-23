@@ -28,5 +28,6 @@
 void mqtt_app_start();
 
 void mqtt_app_set_uri(char *uri,size_t length);
+const char *   mqtt_app_get_uri();
 
 #endif // MQTTAPP_H_INCLUDED
