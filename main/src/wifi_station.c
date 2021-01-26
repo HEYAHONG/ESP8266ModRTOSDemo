@@ -1,5 +1,7 @@
 #include "wifi_station.h"
 #include "stdbool.h"
+#include "esp_smartconfig.h"
+#include "smartconfig_ack.h"
 //WIFI SSID 及 Password缓存
 static wifi_config_t wifi_config = {0};
 static const char *TAG = "wifi station";
@@ -27,7 +29,8 @@ static void obtain_time(void)
     int retry = 0;
     const int retry_count = 10;
 
-    while (timeinfo.tm_year < (2016 - 1900) && ++retry < retry_count) {
+    while (timeinfo.tm_year < (2016 - 1900) && ++retry < retry_count)
+    {
         ESP_LOGI(TAG, "Waiting for system time to be set... (%d/%d)", retry, retry_count);
         vTaskDelay(2000 / portTICK_PERIOD_MS);
         time(&now);
@@ -111,6 +114,33 @@ wifi_config_t * wifi_station_getconfig()
     return &wifi_config;
 }
 
+static void smartconfig_task(void* parm)
+{
+    EventBits_t uxBits;
+    ESP_ERROR_CHECK(esp_smartconfig_set_type(CONFIG_ESP_SMARTCONFIG_TYPE));
+    smartconfig_start_config_t cfg = SMARTCONFIG_START_CONFIG_DEFAULT();
+    ESP_ERROR_CHECK(esp_smartconfig_start(&cfg));
+
+    while (1)
+    {
+        uxBits = xEventGroupWaitBits(s_wifi_station_event_group, WIFI_CONNECTED_BIT | ESPTOUCH_DONE_BIT, true, false, portMAX_DELAY);
+
+        if (uxBits &  WIFI_CONNECTED_BIT)
+        {
+            ESP_LOGI(TAG, "WiFi Connected to ap");
+            esp_smartconfig_stop();
+            vTaskDelete(NULL);
+        }
+
+        if (uxBits & ESPTOUCH_DONE_BIT)
+        {
+            ESP_LOGI(TAG, "smartconfig over");
+            esp_smartconfig_stop();
+            vTaskDelete(NULL);
+        }
+    }
+}
+
 void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
                                 int32_t event_id, void* event_data)
 {
@@ -121,7 +151,7 @@ void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
     else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED)
     {
         IsConnect=false;
-        if (s_retry_num < 100)
+        if (s_retry_num < 10)
         {
             esp_wifi_connect();
             s_retry_num++;
@@ -129,13 +159,14 @@ void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
         }
         else
         {
+            xTaskCreate(smartconfig_task, "smartconfig_task", 4096, NULL, 3, NULL);//启动smartconfig配置wifi
             xEventGroupSetBits(s_wifi_station_event_group, WIFI_FAIL_BIT);
         }
         ESP_LOGI(TAG,"connect to the AP fail");
     }
     else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_CONNECTED)
     {
-           ESP_LOGI(TAG,"the AP is found!");
+        ESP_LOGI(TAG,"the AP is found!");
     }
     else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
     {
@@ -147,6 +178,57 @@ void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
         IsConnect=true;
         obtain_time();//同步时间
     }
+    else if (event_base == SC_EVENT && event_id == SC_EVENT_SCAN_DONE)
+    {
+        ESP_LOGI(TAG, "Scan done");
+    }
+    else if (event_base == SC_EVENT && event_id == SC_EVENT_FOUND_CHANNEL)
+    {
+        ESP_LOGI(TAG, "Found channel");
+    }
+    else if (event_base == SC_EVENT && event_id == SC_EVENT_GOT_SSID_PSWD)
+    {
+        ESP_LOGI(TAG, "Got SSID and password");
+
+        smartconfig_event_got_ssid_pswd_t* evt = (smartconfig_event_got_ssid_pswd_t*)event_data;
+        wifi_config_t wifi_config;
+        uint8_t ssid[33] = { 0 };
+        uint8_t password[65] = { 0 };
+        uint8_t rvd_data[33] = { 0 };
+
+        bzero(&wifi_config, sizeof(wifi_config_t));
+        memcpy(wifi_config.sta.ssid, evt->ssid, sizeof(wifi_config.sta.ssid));
+        memcpy(wifi_config.sta.password, evt->password, sizeof(wifi_config.sta.password));
+        /*
+        wifi_config.sta.bssid_set = evt->bssid_set;
+
+        if (wifi_config.sta.bssid_set == true)
+        {
+            memcpy(wifi_config.sta.bssid, evt->bssid, sizeof(wifi_config.sta.bssid));
+        }
+        */
+        memcpy(ssid, evt->ssid, sizeof(evt->ssid));
+        memcpy(password, evt->password, sizeof(evt->password));
+        ESP_LOGI(TAG, "SSID:%s", ssid);
+        ESP_LOGI(TAG, "PASSWORD:%s", password);
+        if (evt->type == SC_TYPE_ESPTOUCH_V2)
+        {
+            ESP_ERROR_CHECK( esp_smartconfig_get_rvd_data(rvd_data, sizeof(rvd_data)) );
+            ESP_LOGI(TAG, "RVD_DATA:%s", rvd_data);
+        }
+
+        wifi_station_setconfig(&wifi_config);
+
+        ESP_ERROR_CHECK(esp_wifi_disconnect());
+        ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
+        ESP_ERROR_CHECK(esp_wifi_connect());
+        s_retry_num=0;//清空wifi重置计数
+    }
+    else if (event_base == SC_EVENT && event_id == SC_EVENT_SEND_ACK_DONE)
+    {
+        xEventGroupSetBits(s_wifi_station_event_group, ESPTOUCH_DONE_BIT);
+    }
+
 }
 
 
@@ -161,6 +243,7 @@ void wifi_station_init()
 
     ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_station_event_handler, NULL));
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &wifi_station_event_handler, NULL));
+    ESP_ERROR_CHECK(esp_event_handler_register(SC_EVENT, ESP_EVENT_ANY_ID, &wifi_station_event_handler, NULL));
 
 
 

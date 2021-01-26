@@ -35,6 +35,7 @@ extern EventGroupHandle_t s_wifi_station_event_group;
  * - we failed to connect after the maximum amount of retries */
 #define WIFI_CONNECTED_BIT BIT0
 #define WIFI_FAIL_BIT      BIT1
+#define ESPTOUCH_DONE_BIT  BIT2
 
 void wifi_station_init();
 
