@@ -21,9 +21,12 @@
 
 #include "esp_log.h"
 #include "mqtt_client.h"
-
+#include  "sdkconfig.h"
+#ifdef  CONFIG_MQTT_APP_URI
+#define  MQTT_APP_URI  CONFIG_MQTT_APP_URI
+#else
 #define  MQTT_APP_URI "mqtt://iot.eclipse.org:1883"
-
+#endif
 
 void mqtt_app_start();
 

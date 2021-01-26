@@ -1,0 +1,15 @@
+menu "App config"
+
+config WIFI_STATION_SSID
+    string "default wifi station ssid"
+    default Test
+
+config WIFI_STATION_PASSWORD
+    string "default wifi station password"
+    default 12345678
+
+config  MQTT_APP_URI
+    string "default mqtturi"
+    default 'mqtt://iot.eclipse.org:1883'
+
+endmenu

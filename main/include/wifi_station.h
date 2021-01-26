@@ -17,9 +17,17 @@
 #include "string.h"
 #include "lwip/apps/sntp.h"
 #include "stdbool.h"
+#include "sdkconfig.h"
+#ifdef CONFIG_WIFI_STATION_SSID
+#define WIFI_STATION_SSID CONFIG_WIFI_STATION_SSID
+#else
 #define WIFI_STATION_SSID "Test"
+#endif
+#ifdef  CONFIG_WIFI_STATION_PASSWORD
+#define  WIFI_STATION_PASSWORD  CONFIG_WIFI_STATION_PASSWORD
+#else
 #define WIFI_STATION_PASSWORD "12345678"
-
+#endif
 extern EventGroupHandle_t s_wifi_station_event_group;
 
 /* The event group allows multiple bits for each event, but we only care about two events:
