@@ -12,6 +12,10 @@ config  MQTT_APP_URI
     string "default mqtturi"
     default 'mqtt://iot.eclipse.org:1883'
 
+config WIFI_STATION_SMARTCONIG_TIMEOUT
+    int "wifi station smartconfig timeout"
+    default 120
+
 choice ESP_SMARTCONFIG_TYPE
 	prompt "Smartconfig Type"
 	default ESP_TOUCH

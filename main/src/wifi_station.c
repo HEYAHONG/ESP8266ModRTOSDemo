@@ -121,9 +121,12 @@ static void smartconfig_task(void* parm)
     smartconfig_start_config_t cfg = SMARTCONFIG_START_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_smartconfig_start(&cfg));
 
+    uint32_t count=0;
     while (1)
     {
-        uxBits = xEventGroupWaitBits(s_wifi_station_event_group, WIFI_CONNECTED_BIT | ESPTOUCH_DONE_BIT, true, false, portMAX_DELAY);
+        uxBits = xEventGroupWaitBits(s_wifi_station_event_group, WIFI_CONNECTED_BIT | ESPTOUCH_DONE_BIT, true, false, 1000/portTICK_PERIOD_MS);
+
+        count++;//超时计数
 
         if (uxBits &  WIFI_CONNECTED_BIT)
         {
@@ -137,6 +140,14 @@ static void smartconfig_task(void* parm)
             ESP_LOGI(TAG, "smartconfig over");
             esp_smartconfig_stop();
             vTaskDelete(NULL);
+        }
+
+        {//无任何事件
+             ESP_LOGI(TAG, "wait for smartconfig");
+             if(count>=WIFI_STATION_SMARTCONIG_TIMEOUT)
+             {
+                 esp_restart();//重启
+             }
         }
     }
 }

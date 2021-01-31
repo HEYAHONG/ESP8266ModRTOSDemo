@@ -28,6 +28,13 @@
 #else
 #define WIFI_STATION_PASSWORD "12345678"
 #endif
+
+#ifdef CONFIG_WIFI_STATION_SMARTCONIG_TIMEOUT
+#define WIFI_STATION_SMARTCONIG_TIMEOUT CONFIG_WIFI_STATION_SMARTCONIG_TIMEOUT
+#else
+#define WIFI_STATION_SMARTCONIG_TIMEOUT 120
+#endif // WIFI_STATION_SMARTCONIG_TIMEOUT
+
 extern EventGroupHandle_t s_wifi_station_event_group;
 
 /* The event group allows multiple bits for each event, but we only care about two events:
