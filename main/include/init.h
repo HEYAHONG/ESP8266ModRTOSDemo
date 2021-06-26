@@ -21,6 +21,15 @@
 
 #define INIT_MAX_WAIT_HIT 4
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif // __cplusplus
+
 void system_init();
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
 
 #endif // INIT_H_INCLUDED

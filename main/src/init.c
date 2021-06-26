@@ -2,6 +2,8 @@
 #include "wifi_station.h"
 #include "appcmd.h"
 
+#include "sdkconfig.h"
+
 static const char *TAG = "esp8266 init";
 
 //初始化文件系统用于文件存储
@@ -91,6 +93,8 @@ void system_init()
     tzset();
 
     waitforhit();
+
+
 
 }
 

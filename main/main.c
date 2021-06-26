@@ -11,6 +11,8 @@
 #include "wifi_station.h"
 #include "mqttapp.h"
 #include "wifi_station.h"
+#include "sdkconfig.h"
+#include "tftpd.h"
 
 static const char *TAG = "esp8266 main";
 
@@ -26,15 +28,19 @@ static void main_task()
         ESP_LOGI(TAG,"waiting for network !!!");
     }
 
+#if CONFIG_LWIP_TFTPD_ON_BOOT == 1
+    tftpd_start();
+#endif // LWIP_TFTPD_ON_BOOT
+
     mqtt_app_start();
 
     while(1)
     {
-         vTaskDelay(2000 / portTICK_PERIOD_MS);
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
     }
 }
 
 void app_main(void)
 {
-xTaskCreate(main_task, "main_task", 4096, NULL, 10, NULL);
+    xTaskCreate(main_task, "main_task", 4096, NULL, 10, NULL);
 }

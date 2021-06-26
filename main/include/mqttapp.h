@@ -28,9 +28,18 @@
 #define  MQTT_APP_URI "mqtt://iot.eclipse.org:1883"
 #endif
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif // __cplusplus
+
 void mqtt_app_start();
 
 void mqtt_app_set_uri(char *uri,size_t length);
 const char *   mqtt_app_get_uri();
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
 
 #endif // MQTTAPP_H_INCLUDED

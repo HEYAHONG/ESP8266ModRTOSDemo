@@ -21,6 +21,15 @@
 #include "wifi_station.h"
 #include "mqttapp.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif // __cplusplus
+
 void enter_app_cmd();
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
 
 #endif // APPCMD_H_INCLUDED

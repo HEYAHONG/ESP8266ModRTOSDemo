@@ -35,6 +35,11 @@
 #define WIFI_STATION_SMARTCONIG_TIMEOUT 120
 #endif // WIFI_STATION_SMARTCONIG_TIMEOUT
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif // __cplusplus
+
 extern EventGroupHandle_t s_wifi_station_event_group;
 
 /* The event group allows multiple bits for each event, but we only care about two events:
@@ -54,5 +59,10 @@ bool wifi_station_isconnected();
 
 void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
                                 int32_t event_id, void* event_data);
+
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
 
 #endif // WIFI_STATION_H_INCLUDED
