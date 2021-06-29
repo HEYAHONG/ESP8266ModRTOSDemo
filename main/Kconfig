@@ -2,7 +2,7 @@ menu "App config"
 
 config LWIP_TFTPD_ON_BOOT
         bool "Start TFTPD  On Boot"
-	default true
+	default y
 
 config WIFI_STATION_SSID
     string "default wifi station ssid"
