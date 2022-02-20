@@ -8,5 +8,13 @@ COMPONENT_SRCDIRS :=  ./
 #默认RTOS框架中为启用tftp,在此处启用
 COMPONENT_SRCDIRS += tftp
 
+#添加 SimpleMQTTGateWayStack
+COMPONENT_SRCDIRS +=  SimpleMQTTGateWayStack/lib/
+COMPONENT_ADD_INCLUDEDIRS += SimpleMQTTGateWayStack/lib/include
+
+#添加PAHO_MQTT
+COMPONENT_SRCDIRS +=  SimpleMQTTGateWayStack/lib/3rdparty/paho.mqtt.embedded-c/MQTTPacket/src/
+COMPONENT_ADD_INCLUDEDIRS += SimpleMQTTGateWayStack/lib/3rdparty/paho.mqtt.embedded-c/MQTTPacket/src/
+
 COMPONENT_SUBMODULES += main
 

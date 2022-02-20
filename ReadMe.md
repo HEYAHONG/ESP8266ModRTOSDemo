@@ -2,7 +2,19 @@
 
 本工程为使用ESP8266的RTOS_SDK进行编程的Demo。完成一些基础功能以快速开发新应用。
 
-采用SDK：[ESP8266_RTOS_SDK](https://github.com/espressif/ESP8266_RTOS_SDK) （使用分支为master，日期：20210131）
+采用SDK：[ESP8266_RTOS_SDK](https://github.com/espressif/ESP8266_RTOS_SDK) （使用分支为master，日期：20220220）
+
+## 源代码下载
+
+由于本源代码包含第三方源代码,故直接下载可能有部分源代码缺失，需要通过以下方法解决:
+
+- 在进行git clone 使用--recurse-submodules参数。
+
+- 若已通过git clone下载,则在源代码目录中执行以下命令下载子模块:
+
+  ```bash
+   git submodule update --init --recursive
+  ```
 
 ## 功能
 

@@ -1,3 +1,6 @@
 [submodule "tool/spiffsimg"]
 	path = tool/spiffsimg
 	url = https://github.com/DiUS/spiffsimg.git
+[submodule "main/SimpleMQTTGateWayStack"]
+	path = main/SimpleMQTTGateWayStack
+	url = https://github.com/HEYAHONG/SimpleMQTTGateWayStack.git

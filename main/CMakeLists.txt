@@ -7,3 +7,8 @@ set(COMPONENT_ADD_INCLUDEDIRS "." "./")
 set(COMPONENT_SRCS ${COMPONENT_SRCS} tftp/tftp_server.c)
 
 register_component()
+
+#添加SimpleMQTTGateWayStack库
+add_subdirectory(SimpleMQTTGateWayStack/lib)
+target_link_libraries(${COMPONENT_LIB} SMGS)
+
