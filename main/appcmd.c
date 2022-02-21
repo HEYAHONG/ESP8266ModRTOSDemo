@@ -17,7 +17,6 @@ static void printf_help()
 {
     printf("list of cmd:\n");
     printf("\twifi:\n\t\twifi ssid password\n");
-    printf("\tmqtturi:\n\t\tmqtturi uri\n");
     printf("\trestart:\n\t\trestart\n");
     printf("\texit:\n\t\texit\n");
 }
@@ -43,20 +42,7 @@ static void run_cmd(cmd_string_t cmdarray[])
             printf("\twifi:\n\t\twifi ssid password\n");
         }
     }
-    if(strcasecmp(cmdarray[0].ptr,"mqtturi")==0)
-    {
-         if(cmdarray[1].length!=0)
-         {
-             mqtt_app_set_uri(cmdarray[1].ptr,cmdarray[1].length);
-             printf("\nnew mqtturi %s\n",mqtt_app_get_uri());
 
-         }
-         else
-         {
-             printf("\ncurrent mqtturi %s\n",mqtt_app_get_uri());
-             printf("\tmqtturi:\n\t\tmqtturi uri\n");
-         }
-    }
 }
 
 void enter_app_cmd()

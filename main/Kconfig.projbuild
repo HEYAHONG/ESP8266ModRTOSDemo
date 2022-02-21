@@ -12,9 +12,32 @@ config WIFI_STATION_PASSWORD
     string "default wifi station password"
     default 12345678
 
-config  MQTT_APP_URI
-    string "default mqtturi"
-    default 'mqtt://iot.eclipse.org:1883'
+
+menu "Network Protocols"
+
+
+menuconfig NETWORK_PROTOCAL_MQTT
+	bool "MQTT Client"
+	default y
+
+if  NETWORK_PROTOCAL_MQTT
+
+config BROKER_URL
+        string "Broker URL"
+        default "mqtt://mqtt.eclipseprojects.io"
+        help
+            URL of the broker to connect to
+
+config MQTT_CLIENT_ON_BOOT
+	bool "start mqtt client on boot"
+	default y
+
+
+endif
+
+
+endmenu
+
 
 config WIFI_STATION_SMARTCONIG_TIMEOUT
     int "wifi station smartconfig timeout"

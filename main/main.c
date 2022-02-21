@@ -9,10 +9,10 @@
 #include "esp_spiffs.h"
 #include "init.h"
 #include "wifi_station.h"
-#include "mqttapp.h"
 #include "wifi_station.h"
 #include "sdkconfig.h"
 #include "tftpd.h"
+#include "mqtt.h"
 
 static const char *TAG = "esp8266 main";
 
@@ -32,7 +32,12 @@ static void main_task()
     tftpd_start();
 #endif // LWIP_TFTPD_ON_BOOT
 
-    mqtt_app_start();
+#if CONFIG_NETWORK_PROTOCAL_MQTT == 1
+#if CONFIG_MQTT_CLIENT_ON_BOOT == 1
+    mqttc_start(NULL,NULL);
+#endif // CONFIG_MQTT_CLIENT_ON_BOOT
+#endif // CONFIG_NETWORK_PROTOCAL_MQTT
+ 
 
     while(1)
     {

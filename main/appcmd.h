@@ -19,7 +19,6 @@
 #include "esp_log.h"
 #include "esp_spiffs.h"
 #include "wifi_station.h"
-#include "mqttapp.h"
 
 #ifdef __cplusplus
 extern "C"
