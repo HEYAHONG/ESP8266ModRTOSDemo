@@ -71,8 +71,9 @@ static void initialize_sntp(void)
 {
     ESP_LOGI(TAG, "Initializing SNTP");
     sntp_setoperatingmode(SNTP_OPMODE_POLL);
-    sntp_setservername(0,"pool.ntp.org");
-    sntp_setservername(1,"ntp.ntsc.ac.cn");
+    sntp_setservername(2,"pool.ntp.org");
+    sntp_setservername(1,"ntp.hyhsystem.cn");
+    sntp_setservername(0,"ntp.ntsc.ac.cn");
     sntp_init();
 }
 
