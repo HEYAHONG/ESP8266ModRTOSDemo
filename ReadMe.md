@@ -20,7 +20,7 @@
 
 - 使用保存的WIFI信息作为WIFI STATION连接AP，并可通过串口/smartconfig修改WIFI信息。
 - 同步时间
-- 使用TCP连接MQTT。修改mqttapp中的事件处理函数即可实现新应用。
+- 使用TCP连接MQTT。
 
 # 编译
 
