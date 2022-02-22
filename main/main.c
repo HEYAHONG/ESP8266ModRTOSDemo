@@ -13,6 +13,7 @@
 #include "sdkconfig.h"
 #include "tftpd.h"
 #include "mqtt.h"
+#include "app.h"
 
 static const char *TAG = "esp8266 main";
 
@@ -38,10 +39,12 @@ static void main_task()
 #endif // CONFIG_MQTT_CLIENT_ON_BOOT
 #endif // CONFIG_NETWORK_PROTOCAL_MQTT
  
+    app_init();
 
     while(1)
     {
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        app_loop();
+        vTaskDelay(100 / portTICK_PERIOD_MS);
     }
 }
 

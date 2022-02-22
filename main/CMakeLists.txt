@@ -1,7 +1,7 @@
 #添加源代码
-file(GLOB  SOURCE_C_CPP_FILES  *.c  *.C  *.cpp  *.CPP)
+file(GLOB  SOURCE_C_CPP_FILES  *.c    *.cpp  appstack/*.c appstack/*.cpp)
 set(COMPONENT_SRCS ${SOURCE_C_CPP_FILES})
-set(COMPONENT_ADD_INCLUDEDIRS "." "./")
+set(COMPONENT_ADD_INCLUDEDIRS "." "./" "appstack")
 
 #默认RTOS框架中为启用tftp,在此处启用
 set(COMPONENT_SRCS ${COMPONENT_SRCS} tftp/tftp_server.c)

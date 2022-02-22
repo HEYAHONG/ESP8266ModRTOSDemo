@@ -28,9 +28,14 @@ config BROKER_URL
         help
             URL of the broker to connect to
 
+config MQTT_CLIENT_USE_SMGS
+        bool "Use SimpleMQTTGateWayStack (AutoStart)"
+        default y
+        depends on !MQTT_CLIENT_ON_BOOT
+
 config MQTT_CLIENT_ON_BOOT
-	bool "start mqtt client on boot"
-	default y
+	bool "start test client on boot(ONLY FOR TESTS)"
+	default n
 
 
 endif
