@@ -24,7 +24,7 @@ if  NETWORK_PROTOCAL_MQTT
 
 config BROKER_URL
         string "Broker URL"
-        default "mqtt://mqtt.eclipseprojects.io"
+        default "mqtt://mqtt.hyhsystem.cn"
         help
             URL of the broker to connect to
 
