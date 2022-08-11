@@ -3,6 +3,7 @@
 #include "appcmd.h"
 
 #include "sdkconfig.h"
+#include "RC.h"
 
 static const char *TAG = "esp8266 init";
 
@@ -79,6 +80,12 @@ static void initialize_sntp(void)
 
 void system_init()
 {
+    {
+        char * banner=(char *)RCGetHandle("banner");
+        if(banner!=NULL)
+            ESP_LOGI(TAG,"\r\n%s\r\n",banner);
+    }
+
     init_spiffs();
 
     ESP_ERROR_CHECK(nvs_flash_init());

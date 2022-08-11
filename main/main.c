@@ -14,6 +14,7 @@
 #include "tftpd.h"
 #include "mqtt.h"
 #include "app.h"
+#include "RC.h"
 
 static const char *TAG = "esp8266 main";
 
