@@ -28,7 +28,17 @@
 
 # 编译
 
-本工程中不包含任何SDK的源代码文件，因此首先应该正确安装并使用[ESP8266_RTOS_SDK](https://github.com/espressif/ESP8266_RTOS_SDK) 。本工程中的编译方式同SDK中example中的工程相同（安装完成后可尝试编译SDK中的example中的工程，成功后再使用cd命令切换到本工程目录编译）。
+## 编译环境安装
+
+### Linux / WSL
+
+执行工程目录下的 bootstrap.sh，当提示 初始化完成时 即表示编译环境安装完成。
+
+### 其它
+
+进入 [ESP8266_RTOS_SDK](ESP8266_RTOS_SDK) 目录,安装官方的说明安装。
+
+## 编译说明
 
 环境安装正确后可采用以下方式编译（由SDK提供）：
 
