@@ -81,6 +81,8 @@ function InstallFailure
 	echo -e "初始化失败,请手动安装SDK开发环境。"
 	exit;
 }
+git submodule update --init --recursive
+[ $? -eq 0 ] || InstallFailure
 ./install.sh
 [ $? -eq 0 ] || InstallFailure
 source ./export.sh
