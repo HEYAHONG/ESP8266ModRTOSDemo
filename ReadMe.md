@@ -6,7 +6,7 @@
 
 本工程为使用ESP8266的RTOS_SDK进行编程的Demo。完成一些基础功能以快速开发新应用。
 
-采用SDK：[ESP8266_RTOS_SDK](https://github.com/espressif/ESP8266_RTOS_SDK) （使用分支为master，日期：20220220）
+采用SDK：[ESP8266_RTOS_SDK](https://github.com/espressif/ESP8266_RTOS_SDK) 
 
 ## 源代码下载
 
