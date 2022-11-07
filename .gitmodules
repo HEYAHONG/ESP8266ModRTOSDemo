@@ -1,9 +1,9 @@
-[submodule "tool/spiffsimg"]
-	path = tool/spiffsimg
-	url = ../../HEYAHONG/spiffsimg.git
 [submodule "main/SimpleMQTTGateWayStack"]
 	path = main/SimpleMQTTGateWayStack
 	url = ../../HEYAHONG/SimpleMQTTGateWayStack.git
 [submodule "ESP8266_RTOS_SDK"]
 	path = ESP8266_RTOS_SDK
 	url = ../../espressif/ESP8266_RTOS_SDK.git
+[submodule "tools/mkspiffs"]
+	path = tools/mkspiffs
+	url = ../../HEYAHONG/mkspiffs.git
