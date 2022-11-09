@@ -1,3 +1,4 @@
+spiffs_image.bin
 build
 sdkconfig
 sdkconfig.old
