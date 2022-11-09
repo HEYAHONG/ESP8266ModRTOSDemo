@@ -21,13 +21,14 @@ $(SPIFFS_BIN) : mkspiffs
 #默认采用gcc作为编译器
 .PHONY:mkspiffs
 mkspiffs: mkspiffs_config
-	@make -C tools/mkspiffs CC=gcc CXX=g++  CFLAGS= CPPFLAGS= LDFLAGS=
+	@make -C tools/mkspiffs CC=gcc CXX=g++  CFLAGS= CPPFLAGS= LDFLAGS= clean all
 
 
 .PHONY:mkspiffs_config
 mkspiffs_config: $(BUILD_DIR_BASE)/include/sdkconfig.h $(PARTITION_TABLE_BIN) 
 	@cp -rf $(BUILD_DIR_BASE)/include/sdkconfig.h tools/mkspiffs/include/sdkconfig.h
 	@cp -rf tools/mkspiffs.makefile tools/mkspiffs/Makefile
+	@cp -rf ESP8266_RTOS_SDK/components/spiffs/spiffs/* tools/mkspiffs/spiffs/
 	$(eval SPIFFS_OFFSET := $(shell $(GET_PART_INFO) --partition-table-file $(PARTITION_TABLE_BIN) --partition-table-offset $(PARTITION_TABLE_OFFSET) get_partition_info --partition-type data --partition-subtype spiffs --info offset))
 	$(eval SPIFFS_SIZE := $(shell $(GET_PART_INFO) --partition-table-file $(PARTITION_TABLE_BIN) --partition-table-offset $(PARTITION_TABLE_OFFSET) get_partition_info --partition-type data --partition-subtype spiffs --info size))
 	$(eval ESPTOOL_ALL_FLASH_ARGS += ${SPIFFS_OFFSET} ${SPIFFS_BIN} )

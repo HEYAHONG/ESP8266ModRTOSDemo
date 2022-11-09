@@ -87,6 +87,9 @@ void system_init()
     }
 
     init_spiffs();
+    //fix file read error when first boot
+    deinit_spiffs();
+    init_spiffs();
 
     ESP_ERROR_CHECK(nvs_flash_init());
     ESP_ERROR_CHECK(esp_netif_init());
