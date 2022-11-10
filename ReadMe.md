@@ -48,6 +48,27 @@
   const unsigned char * RCGetHandle(const char * name);
   ```
 
+## SPIFFS
+
+ spiffs是一个用于嵌入式目标上的SPI NOR flash设备的文件系统。挂载spiffs后可直接以文件的形式进行数据的存储(可读可写)。
+
+### 预置的镜像
+
+可预先将一些文件放入文件系统,可直接在挂载后访问(可读可写)。
+
+目录:[spiffs_image](spiffs_image)
+
+### 挂载
+
+默认情况下,挂载的目录为/spiffs,具体参见 [main/init.c](main/init.c)
+### 镜像生成工具
+
+采用了mkspiffs作为镜像生成工具且使用源代码编译,故需要安装make、gcc、g++等工具。
+
+注意:修改spiffs的Kconfig参数后需要检验是否能够正常读取,有些参数不能正常工作。
+
+
+
 # 编译
 
 ## 编译环境安装
