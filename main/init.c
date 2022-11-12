@@ -7,7 +7,7 @@
 
 static const char *TAG = "esp8266 init";
 
-//³õÊ¼»¯ÎÄ¼şÏµÍ³ÓÃÓÚÎÄ¼ş´æ´¢
+//åˆå§‹åŒ–æ–‡ä»¶ç³»ç»Ÿç”¨äºæ–‡ä»¶å­˜å‚¨
 static void init_spiffs()
 {
     ESP_LOGI(TAG, "Initializing SPIFFS");
@@ -50,7 +50,7 @@ static void  deinit_spiffs()
     ESP_LOGI(TAG, "SPIFFS unmounted");
 }
 
-//µÈ´ı°´¼ü°´ÏÂ
+//ç­‰å¾…æŒ‰é”®æŒ‰ä¸‹
 static void  waitforhit()
 {
     int count = 0;
@@ -60,7 +60,7 @@ static void  waitforhit()
          vTaskDelay(1000 / portTICK_PERIOD_MS);
          if(getchar_unlocked()>0)
          {
-             ESP_LOGI(TAG, "key hit");//°´ÏÂ°´¼ü½øÈëÅäÖÃÄ£Ê½
+             ESP_LOGI(TAG, "key hit");//æŒ‰ä¸‹æŒ‰é”®è¿›å…¥é…ç½®æ¨¡å¼
              enter_app_cmd();
              break;
          }
@@ -98,7 +98,7 @@ void system_init()
     tcpip_adapter_init();
 
     initialize_sntp();
-    //ÉèÖÃÊ±ÇøÎªÖĞ¹ú
+    //è®¾ç½®æ—¶åŒºä¸ºä¸­å›½
     // Set timezone to China Standard Time
     setenv("TZ", "CST-8", 1);
     tzset();

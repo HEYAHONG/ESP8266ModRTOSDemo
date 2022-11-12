@@ -4,17 +4,17 @@
 #include "sdkconfig.h"
 
 /*
-APPCONFIG ÓÃÓÚ¶¨ÒåÒ»Ğ©Í¨ÓÃµÄºê¶¨Òå
+APPCONFIG ç”¨äºå®šä¹‰ä¸€äº›é€šç”¨çš„å®å®šä¹‰
 */
 
-//³£ÓÃFreeRTOSÍ·ÎÄ¼ş
+//å¸¸ç”¨FreeRTOSå¤´æ–‡ä»¶
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/timers.h"
 #include "freertos/semphr.h"
 #include "freertos/event_groups.h"
 
-//¶¨ÒåÄ¬ÈÏÈ«¾ÖjsonÅäÖÃÎÄ¼ş
+//å®šä¹‰é»˜è®¤å…¨å±€jsoné…ç½®æ–‡ä»¶
 #define DEFAULT_GOLBAL_CONFIG_JSON "{}"
 
 

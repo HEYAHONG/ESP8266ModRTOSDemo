@@ -2,7 +2,7 @@
 #include "stdbool.h"
 #include "esp_smartconfig.h"
 #include "smartconfig_ack.h"
-//WIFI SSID ¼° Password»º´æ
+//WIFI SSID åŠ Passwordç¼“å­˜
 static wifi_config_t wifi_config = {0};
 static const char *TAG = "wifi station";
 
@@ -65,13 +65,13 @@ static void load_wifi_station_config()
     memset(&wifi_config.sta.password,0,sizeof(wifi_config.sta.password));
     memcpy(wifi_config.sta.password,WIFI_STATION_PASSWORD,sizeof(WIFI_STATION_PASSWORD));
 
-    //ÒÔÏÂ¾ùĞèÒªspiffsÖ§³Ö
+    //ä»¥ä¸‹å‡éœ€è¦spiffsæ”¯æŒ
     struct stat st;
     if (stat("/spiffs/wifistationconfig.bin", &st) == 0)
     {
         if(st.st_size != sizeof(wifi_config))
         {
-            //ÎÄ¼ş´óĞ¡Óë½á¹¹½á¹¹Ìå´óĞ¡²»Ò»ÖÂ
+            //æ–‡ä»¶å¤§å°ä¸ç»“æ„ç»“æ„ä½“å¤§å°ä¸ä¸€è‡´
             save_wifi_station_config();
         }
         else
@@ -93,7 +93,7 @@ static void load_wifi_station_config()
     }
     else
     {
-        //±£´æÎÄ¼ş
+        //ä¿å­˜æ–‡ä»¶
         save_wifi_station_config();
     }
 }
@@ -126,7 +126,7 @@ static void smartconfig_task(void* parm)
     {
         uxBits = xEventGroupWaitBits(s_wifi_station_event_group, WIFI_CONNECTED_BIT | ESPTOUCH_DONE_BIT, true, false, 1000/portTICK_PERIOD_MS);
 
-        count++;//³¬Ê±¼ÆÊı
+        count++;//è¶…æ—¶è®¡æ•°
 
         if (uxBits &  WIFI_CONNECTED_BIT)
         {
@@ -142,11 +142,11 @@ static void smartconfig_task(void* parm)
             vTaskDelete(NULL);
         }
 
-        {//ÎŞÈÎºÎÊÂ¼ş
+        {//æ— ä»»ä½•äº‹ä»¶
              ESP_LOGI(TAG, "wait for smartconfig");
              if(count>=WIFI_STATION_SMARTCONIG_TIMEOUT)
              {
-                 esp_restart();//ÖØÆô
+                 esp_restart();//é‡å¯
              }
         }
     }
@@ -170,7 +170,7 @@ void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
         }
         else
         {
-            xTaskCreate(smartconfig_task, "smartconfig_task", 4096, NULL, 3, NULL);//Æô¶¯smartconfigÅäÖÃwifi
+            xTaskCreate(smartconfig_task, "smartconfig_task", 4096, NULL, 3, NULL);//å¯åŠ¨smartconfigé…ç½®wifi
             xEventGroupSetBits(s_wifi_station_event_group, WIFI_FAIL_BIT);
         }
         ESP_LOGI(TAG,"connect to the AP fail");
@@ -187,7 +187,7 @@ void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
         s_retry_num = 0;
         xEventGroupSetBits(s_wifi_station_event_group, WIFI_CONNECTED_BIT);
         IsConnect=true;
-        obtain_time();//Í¬²½Ê±¼ä
+        obtain_time();//åŒæ­¥æ—¶é—´
     }
     else if (event_base == SC_EVENT && event_id == SC_EVENT_SCAN_DONE)
     {
@@ -233,7 +233,7 @@ void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
         ESP_ERROR_CHECK(esp_wifi_disconnect());
         ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
         ESP_ERROR_CHECK(esp_wifi_connect());
-        s_retry_num=0;//Çå¿ÕwifiÖØÖÃ¼ÆÊı
+        s_retry_num=0;//æ¸…ç©ºwifié‡ç½®è®¡æ•°
     }
     else if (event_base == SC_EVENT && event_id == SC_EVENT_SEND_ACK_DONE)
     {
