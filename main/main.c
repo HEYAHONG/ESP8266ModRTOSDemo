@@ -24,10 +24,10 @@ static void main_task()
 
     wifi_station_init();
 
-    while(!wifi_station_isconnected())
+    while (!wifi_station_isconnected())
     {
         vTaskDelay(2000 / portTICK_PERIOD_MS);
-        ESP_LOGI(TAG,"waiting for network !!!");
+        ESP_LOGI(TAG, "waiting for network !!!");
     }
 
 #if CONFIG_LWIP_TFTPD_ON_BOOT == 1
@@ -36,13 +36,13 @@ static void main_task()
 
 #if CONFIG_NETWORK_PROTOCAL_MQTT == 1
 #if CONFIG_MQTT_CLIENT_ON_BOOT == 1
-    mqttc_start(NULL,NULL);
+    mqttc_start(NULL, NULL);
 #endif // CONFIG_MQTT_CLIENT_ON_BOOT
 #endif // CONFIG_NETWORK_PROTOCAL_MQTT
- 
+
     app_init();
 
-    while(1)
+    while (1)
     {
         app_loop();
         vTaskDelay(100 / portTICK_PERIOD_MS);

@@ -53,12 +53,12 @@ void wifi_station_init();
 
 void wifi_station_setconfig(const wifi_config_t *cfg);
 
-wifi_config_t * wifi_station_getconfig();
+wifi_config_t *wifi_station_getconfig();
 
 bool wifi_station_isconnected();
 
-void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
-                                int32_t event_id, void* event_data);
+void wifi_station_event_handler(void *arg, esp_event_base_t event_base,
+                                int32_t event_id, void *event_data);
 
 
 #ifdef __cplusplus

@@ -10,7 +10,7 @@ static int s_retry_num = 0;
 EventGroupHandle_t s_wifi_station_event_group;
 
 
-static bool IsConnect=false;
+static bool IsConnect = false;
 
 bool wifi_station_isconnected()
 {
@@ -37,21 +37,21 @@ static void obtain_time(void)
         localtime_r(&now, &timeinfo);
     }
 
-    ESP_LOGI(TAG,"time now: %s",asctime(localtime(&now)));
+    ESP_LOGI(TAG, "time now: %s", asctime(localtime(&now)));
 }
 
 
 
 static void save_wifi_station_config()
 {
-    FILE* f = fopen("/spiffs/wifistationconfig.bin", "wb");
+    FILE *f = fopen("/spiffs/wifistationconfig.bin", "wb");
     if (f == NULL)
     {
         ESP_LOGE(TAG, "Failed to open wifistationconfig.bin for writing");
         return;
     }
 
-    fwrite(&wifi_config,sizeof(wifi_config),1,f);
+    fwrite(&wifi_config, sizeof(wifi_config), 1, f);
 
     ESP_LOGI(TAG, "save file wifistationconfig.bin");
 
@@ -60,30 +60,30 @@ static void save_wifi_station_config()
 
 static void load_wifi_station_config()
 {
-    memset(&wifi_config.sta.ssid,0,sizeof(wifi_config.sta.ssid));
-    memcpy(wifi_config.sta.ssid,WIFI_STATION_SSID,sizeof(WIFI_STATION_SSID));
-    memset(&wifi_config.sta.password,0,sizeof(wifi_config.sta.password));
-    memcpy(wifi_config.sta.password,WIFI_STATION_PASSWORD,sizeof(WIFI_STATION_PASSWORD));
+    memset(&wifi_config.sta.ssid, 0, sizeof(wifi_config.sta.ssid));
+    memcpy(wifi_config.sta.ssid, WIFI_STATION_SSID, sizeof(WIFI_STATION_SSID));
+    memset(&wifi_config.sta.password, 0, sizeof(wifi_config.sta.password));
+    memcpy(wifi_config.sta.password, WIFI_STATION_PASSWORD, sizeof(WIFI_STATION_PASSWORD));
 
     //以下均需要spiffs支持
     struct stat st;
     if (stat("/spiffs/wifistationconfig.bin", &st) == 0)
     {
-        if(st.st_size != sizeof(wifi_config))
+        if (st.st_size != sizeof(wifi_config))
         {
             //文件大小与结构结构体大小不一致
             save_wifi_station_config();
         }
         else
         {
-            FILE* f = fopen("/spiffs/wifistationconfig.bin", "rb");
+            FILE *f = fopen("/spiffs/wifistationconfig.bin", "rb");
             if (f == NULL)
             {
                 ESP_LOGE(TAG, "Failed to open wifistationconfig.bin for read");
                 return;
             }
 
-            fread(&wifi_config,sizeof(wifi_config),1,f);
+            fread(&wifi_config, sizeof(wifi_config), 1, f);
 
             ESP_LOGI(TAG, "load file wifistationconfig.bin");
 
@@ -103,28 +103,28 @@ static void load_wifi_station_config()
 
 void wifi_station_setconfig(const wifi_config_t *cfg)
 {
-    if(cfg!=NULL && cfg!=&wifi_config)
-        memcpy(&wifi_config,cfg,sizeof(wifi_config));
+    if (cfg != NULL && cfg != &wifi_config)
+        memcpy(&wifi_config, cfg, sizeof(wifi_config));
     save_wifi_station_config();
 }
 
-wifi_config_t * wifi_station_getconfig()
+wifi_config_t *wifi_station_getconfig()
 {
     load_wifi_station_config();
     return &wifi_config;
 }
 
-static void smartconfig_task(void* parm)
+static void smartconfig_task(void *parm)
 {
     EventBits_t uxBits;
     ESP_ERROR_CHECK(esp_smartconfig_set_type(CONFIG_ESP_SMARTCONFIG_TYPE));
     smartconfig_start_config_t cfg = SMARTCONFIG_START_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_smartconfig_start(&cfg));
 
-    uint32_t count=0;
+    uint32_t count = 0;
     while (1)
     {
-        uxBits = xEventGroupWaitBits(s_wifi_station_event_group, WIFI_CONNECTED_BIT | ESPTOUCH_DONE_BIT, true, false, 1000/portTICK_PERIOD_MS);
+        uxBits = xEventGroupWaitBits(s_wifi_station_event_group, WIFI_CONNECTED_BIT | ESPTOUCH_DONE_BIT, true, false, 1000 / portTICK_PERIOD_MS);
 
         count++;//超时计数
 
@@ -142,18 +142,19 @@ static void smartconfig_task(void* parm)
             vTaskDelete(NULL);
         }
 
-        {//无任何事件
-             ESP_LOGI(TAG, "wait for smartconfig");
-             if(count>=WIFI_STATION_SMARTCONIG_TIMEOUT)
-             {
-                 esp_restart();//重启
-             }
+        {
+            //无任何事件
+            ESP_LOGI(TAG, "wait for smartconfig");
+            if (count >= WIFI_STATION_SMARTCONIG_TIMEOUT)
+            {
+                esp_restart();//重启
+            }
         }
     }
 }
 
-void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
-                                int32_t event_id, void* event_data)
+void wifi_station_event_handler(void *arg, esp_event_base_t event_base,
+                                int32_t event_id, void *event_data)
 {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START)
     {
@@ -161,7 +162,7 @@ void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
     }
     else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED)
     {
-        IsConnect=false;
+        IsConnect = false;
         if (s_retry_num < 10)
         {
             esp_wifi_connect();
@@ -173,20 +174,20 @@ void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
             xTaskCreate(smartconfig_task, "smartconfig_task", 4096, NULL, 3, NULL);//启动smartconfig配置wifi
             xEventGroupSetBits(s_wifi_station_event_group, WIFI_FAIL_BIT);
         }
-        ESP_LOGI(TAG,"connect to the AP fail");
+        ESP_LOGI(TAG, "connect to the AP fail");
     }
     else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_CONNECTED)
     {
-        ESP_LOGI(TAG,"the AP is found!");
+        ESP_LOGI(TAG, "the AP is found!");
     }
     else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
     {
-        ip_event_got_ip_t* event = (ip_event_got_ip_t*) event_data;
+        ip_event_got_ip_t *event = (ip_event_got_ip_t *) event_data;
         ESP_LOGI(TAG, "got ip:%s",
                  ip4addr_ntoa(&event->ip_info.ip));
         s_retry_num = 0;
         xEventGroupSetBits(s_wifi_station_event_group, WIFI_CONNECTED_BIT);
-        IsConnect=true;
+        IsConnect = true;
         obtain_time();//同步时间
     }
     else if (event_base == SC_EVENT && event_id == SC_EVENT_SCAN_DONE)
@@ -201,7 +202,7 @@ void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
     {
         ESP_LOGI(TAG, "Got SSID and password");
 
-        smartconfig_event_got_ssid_pswd_t* evt = (smartconfig_event_got_ssid_pswd_t*)event_data;
+        smartconfig_event_got_ssid_pswd_t *evt = (smartconfig_event_got_ssid_pswd_t *)event_data;
         wifi_config_t wifi_config;
         uint8_t ssid[33] = { 0 };
         uint8_t password[65] = { 0 };
@@ -224,7 +225,7 @@ void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
         ESP_LOGI(TAG, "PASSWORD:%s", password);
         if (evt->type == SC_TYPE_ESPTOUCH_V2)
         {
-            ESP_ERROR_CHECK( esp_smartconfig_get_rvd_data(rvd_data, sizeof(rvd_data)) );
+            ESP_ERROR_CHECK(esp_smartconfig_get_rvd_data(rvd_data, sizeof(rvd_data)));
             ESP_LOGI(TAG, "RVD_DATA:%s", rvd_data);
         }
 
@@ -233,7 +234,7 @@ void wifi_station_event_handler(void* arg, esp_event_base_t event_base,
         ESP_ERROR_CHECK(esp_wifi_disconnect());
         ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
         ESP_ERROR_CHECK(esp_wifi_connect());
-        s_retry_num=0;//清空wifi重置计数
+        s_retry_num = 0; //清空wifi重置计数
     }
     else if (event_base == SC_EVENT && event_id == SC_EVENT_SEND_ACK_DONE)
     {
@@ -270,9 +271,9 @@ void wifi_station_init()
         wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
     }
 
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA) );
-    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config) );
-    ESP_ERROR_CHECK(esp_wifi_start() );
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
+    ESP_ERROR_CHECK(esp_wifi_start());
 
     ESP_LOGI(TAG, "wifi_init_sta finished.");
 

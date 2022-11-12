@@ -12,23 +12,30 @@ static void init_spiffs()
 {
     ESP_LOGI(TAG, "Initializing SPIFFS");
 
-    esp_vfs_spiffs_conf_t conf = {
-      .base_path = "/spiffs",
-      .partition_label = NULL,
-      .max_files = 100,
-      .format_if_mount_failed = true
+    esp_vfs_spiffs_conf_t conf =
+    {
+        .base_path = "/spiffs",
+        .partition_label = NULL,
+        .max_files = 100,
+        .format_if_mount_failed = true
     };
 
     // Use settings defined above to initialize and mount SPIFFS filesystem.
     // Note: esp_vfs_spiffs_register is an all-in-one convenience function.
     esp_err_t ret = esp_vfs_spiffs_register(&conf);
 
-    if (ret != ESP_OK) {
-        if (ret == ESP_FAIL) {
+    if (ret != ESP_OK)
+    {
+        if (ret == ESP_FAIL)
+        {
             ESP_LOGE(TAG, "Failed to mount or format filesystem");
-        } else if (ret == ESP_ERR_NOT_FOUND) {
+        }
+        else if (ret == ESP_ERR_NOT_FOUND)
+        {
             ESP_LOGE(TAG, "Failed to find SPIFFS partition");
-        } else {
+        }
+        else
+        {
             ESP_LOGE(TAG, "Failed to initialize SPIFFS (%s)", esp_err_to_name(ret));
         }
         return;
@@ -36,9 +43,12 @@ static void init_spiffs()
 
     size_t total = 0, used = 0;
     ret = esp_spiffs_info(NULL, &total, &used);
-    if (ret != ESP_OK) {
+    if (ret != ESP_OK)
+    {
         ESP_LOGE(TAG, "Failed to get SPIFFS partition information (%s)", esp_err_to_name(ret));
-    } else {
+    }
+    else
+    {
         ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
     }
 }
@@ -54,16 +64,16 @@ static void  deinit_spiffs()
 static void  waitforhit()
 {
     int count = 0;
-    while(count++ <INIT_MAX_WAIT_HIT)
+    while (count++ < INIT_MAX_WAIT_HIT)
     {
-         ESP_LOGI(TAG, "hit any key to change settings(%d/%d)",count,INIT_MAX_WAIT_HIT);
-         vTaskDelay(1000 / portTICK_PERIOD_MS);
-         if(getchar_unlocked()>0)
-         {
-             ESP_LOGI(TAG, "key hit");//按下按键进入配置模式
-             enter_app_cmd();
-             break;
-         }
+        ESP_LOGI(TAG, "hit any key to change settings(%d/%d)", count, INIT_MAX_WAIT_HIT);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        if (getchar_unlocked() > 0)
+        {
+            ESP_LOGI(TAG, "key hit");//按下按键进入配置模式
+            enter_app_cmd();
+            break;
+        }
     }
 
 }
@@ -72,18 +82,18 @@ static void initialize_sntp(void)
 {
     ESP_LOGI(TAG, "Initializing SNTP");
     sntp_setoperatingmode(SNTP_OPMODE_POLL);
-    sntp_setservername(2,"pool.ntp.org");
-    sntp_setservername(1,"ntp.hyhsystem.cn");
-    sntp_setservername(0,"ntp.ntsc.ac.cn");
+    sntp_setservername(2, "pool.ntp.org");
+    sntp_setservername(1, "ntp.hyhsystem.cn");
+    sntp_setservername(0, "ntp.ntsc.ac.cn");
     sntp_init();
 }
 
 void system_init()
 {
     {
-        char * banner=(char *)RCGetHandle("banner");
-        if(banner!=NULL)
-            ESP_LOGI(TAG,"\r\n%s\r\n",banner);
+        char *banner = (char *)RCGetHandle("banner");
+        if (banner != NULL)
+            ESP_LOGI(TAG, "\r\n%s\r\n", banner);
     }
 
     init_spiffs();
