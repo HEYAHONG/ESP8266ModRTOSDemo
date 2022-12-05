@@ -67,7 +67,9 @@
 
 注意:修改spiffs的Kconfig参数后需要检验是否能够正常读取,有些参数不能正常工作。
 
+## 测试截图
 
+![ESP8266ModRTOSDemo-1](doc/image/ESP8266ModRTOSDemo-1.png)
 
 # 编译
 
