@@ -9,10 +9,10 @@ set(COMPONENT_SRCS ${COMPONENT_SRCS} tftp/tftp_server.c)
 register_component()
 
 #添加SimpleMQTTGateWayStack库
-add_subdirectory(SimpleMQTTGateWayStack/lib)
+add_subdirectory(SimpleMQTTGateWayStack/lib EXCLUDE_FROM_ALL)
 target_link_libraries(${COMPONENT_LIB} SMGS)
 
 #添加RC库
-add_subdirectory(rc)
+add_subdirectory(rc EXCLUDE_FROM_ALL)
 target_link_libraries(${COMPONENT_LIB} RC)
 
