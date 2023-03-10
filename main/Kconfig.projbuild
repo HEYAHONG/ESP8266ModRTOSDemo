@@ -29,7 +29,7 @@ choice MQTT_CLIENT_STACK
 
 
 config MQTT_CLIENT_USE_SMGS
-        bool "Use SimpleMQTTGateWayStack"
+    bool "Use SimpleMQTTGateWayStack"
 
 endchoice
 
