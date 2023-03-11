@@ -12,6 +12,12 @@ config WIFI_STATION_PASSWORD
     string "default wifi station password"
     default 12345678
 
+#保留内存,由于应用中用到了大量的动态内存分配，因此应保留一部分内存
+#当实际剩余内存小于保留内存时30s后，模块将重启。
+config APPSTACK_RESERVED_HEAP_MEMORY
+    int "reserved heap memory"
+    default 1024
+
 
 menu "Network Protocols"
 

@@ -2,6 +2,8 @@
 #include "esp_log.h"
 #include "esp_wifi.h"
 #include "app.h"
+#include <chrono>
+
 
 #ifdef CONFIG_MQTT_CLIENT_USE_SMGS
 void SMGS_Init();
@@ -60,9 +62,44 @@ void app_init()
 
 }
 
+/*
+保留内存检查
+*/
+static bool is_reserved_heap_memory_normal()
+{
+    if(esp_get_free_heap_size()>CONFIG_APPSTACK_RESERVED_HEAP_MEMORY)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+static std::chrono::system_clock::time_point reserved_heap_memory_normal_tp;
+static void check_reserved_heap_memory_normal()
+{
+    if(is_reserved_heap_memory_normal())
+    {
+        reserved_heap_memory_normal_tp=std::chrono::system_clock::now();
+    }
+    else
+    {
+        if((reserved_heap_memory_normal_tp+std::chrono::seconds(30))<=std::chrono::system_clock::now())
+        {
+            ESP_LOGI(TAG,"memory is low,it will restart!\n");
+            esp_restart();
+        }
+    }
+}
+
 void app_loop()
 {
-    vTaskDelay(1);
+    //检查保留内存
+    check_reserved_heap_memory_normal();
+
+    vTaskDelay(100);
 }
 
 
