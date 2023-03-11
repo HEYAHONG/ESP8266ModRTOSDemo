@@ -5,8 +5,8 @@
 COMPONENT_ADD_INCLUDEDIRS := ./
 COMPONENT_SRCDIRS :=  ./
 
-COMPONENT_ADD_INCLUDEDIRS += appstack
-COMPONENT_SRCDIRS +=  appstack
+COMPONENT_ADD_INCLUDEDIRS += appstack OneNetToken
+COMPONENT_SRCDIRS +=  appstack OneNetToken
 
 #默认RTOS框架中为启用tftp,在此处启用
 COMPONENT_SRCDIRS += tftp

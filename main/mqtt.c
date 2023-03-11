@@ -3,6 +3,11 @@
 
 #if CONFIG_NETWORK_PROTOCAL_MQTT == 1
 
+#ifndef CONFIG_BROKER_URL
+#ifdef  CONFIG_ONENET_BROKER_URL
+#define CONFIG_BROKER_URL CONFIG_ONENET_BROKER_URL
+#endif // CONFIG_ONENET_BROKER_URL
+#endif // CONFIG_BROKER_URL
 
 static const char *TAG = "MQTT Client";
 
@@ -106,6 +111,20 @@ void mqttc_start(mqttc_event_on_init_config_t on_cfg, mqttc_event_callback_t cb)
         }
     }
 
+#ifdef CONFIG_ONENET_BROKER_URL
+    {
+        const char *rc = NULL;
+        if ((rc = (const char *)RCGetHandle("OneNET/MQTTS-certificate.pem")) != NULL)
+        {
+            mqtt_cfg.use_global_ca_store = false;
+            mqtt_cfg.skip_cert_common_name_check = true;
+            mqtt_cfg.cert_pem = rc;
+            mqtt_cfg.client_cert_pem=NULL;
+            mqtt_cfg.client_key_pem = NULL;
+        }
+
+    }
+#endif // CONFIG_ONENET_BROKER_URL
 
     if (on_config != NULL)
     {

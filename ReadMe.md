@@ -71,11 +71,26 @@
 
 ![ESP8266ModRTOSDemo-1](doc/image/ESP8266ModRTOSDemo-1.png)
 
+### 启用OneNET MQTT直连设备测试
+
+Kconfig如下：
+
+![OneNETDevice-kconfig](doc/image/OneNETDevice-kconfig.png)
+
+monitor截图：
+
+![OneNETDevice-monitor](doc/image/OneNETDevice-monitor.png)
+
+网站信息：
+
+![OneNETDevice-website](doc/image/OneNETDevice-website.png)
+
 # 编译
 
 ## 编译环境安装
 
-注意:仅支持github.com下载的代码，其他方式下载的代码需要完全按照官方的说明安装。
+注意:仅支持github.com下载的代码，非github用户下载时不能下载子模块，下载后自行修改.gitmodules中ESP8266_RTOS_SDK的url为 https://github.com/espressif/ESP8266_RTOS_SDK.git
+ 后再按照说明中源代码下载的方式同步子模块。
 
 ### Linux / WSL
 
