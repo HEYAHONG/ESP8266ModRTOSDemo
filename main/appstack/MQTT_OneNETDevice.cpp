@@ -5,6 +5,7 @@
 #include "mqtt.h"
 #include "onenettokencpp.h"
 #include <inttypes.h>
+#include <string>
 
 /*
 产品ID
@@ -47,6 +48,7 @@ static bool mqttc_event_callback(esp_mqtt_event_id_t event_id, esp_mqtt_event_ha
     {
     case MQTT_EVENT_CONNECTED:
     {
+        esp_mqtt_client_subscribe(event->client, (std::string("$sys/")+ONENET_PRODUCT_ID+"/"+ONENET_PRODUCT_DEVICENAME+"/#").c_str(), 0);
         ESP_LOGI(TAG,"OneNET Device is online");
         return true;
     }
