@@ -30,19 +30,71 @@ OneNET Hmac method
 
 
 #ifdef CONFIG_MQTT_CLIENT_USE_ONENET_DEVICE
-
+#include "onenetonejson.h"
 static const char *TAG = "MQTT_OneNETDevice";
 
 static bool mqttc_event_callback(esp_mqtt_event_id_t event_id, esp_mqtt_event_handle_t event); //返回true表示消息已处理，无需其它处理
 static void mqttc_event_on_init_config(esp_mqtt_client_config_t *mqtt_cfg);
 
+static OneNETOneJson onejson;
+
+/*
+此文件只包含常用功能，详细接口请查看onenetonejson.h的接口
+*/
+
+static std::map<std::string,Json::Value>  PropertyCache;
+
+/** \brief 属性值设置
+ *
+ * \param key std::string 属性名称
+ * \param value Json::Value 属性值，可以为任意Json类型
+ * \return bool 是否成功
+ *
+ */
+static bool DeviceOnPropertySet(std::string key,Json::Value value)
+{
+
+    PropertyCache[key]=value;
+    return true;
+}
+
+/** \brief 属性值获取
+ *
+ * \param key std::string 属性名称
+ * \param value Json::Value& 属性值，可以为任意Json类型
+ * \return bool 是否成功
+ *
+ */
+static bool DeviceOnPropertyGet(std::string key,Json::Value& value)
+{
+
+    if(PropertyCache.find(key)!=PropertyCache.end())
+    {
+        value=PropertyCache[key];
+        return true;
+    }
+    return false;
+}
+
 //OneNETDevice初始化
 void OneNETDevice_Init()
 {
+    {
+
+        //设置OneJson发送函数
+        onejson.SetMQTTPublish([](std::string topic,std::string payload)->bool
+        {
+            return mqttc_publish(topic.c_str(),payload.c_str(),payload.length(),0,0);
+        });
+        //初始化OneJson
+        onejson.SetDev(ONENET_PRODUCT_ID,ONENET_PRODUCT_DEVICENAME);
+        onejson.SetOnPropertyGet(DeviceOnPropertyGet);
+        onejson.SetOnPropertySet(DeviceOnPropertySet);
+    }
     mqttc_start(mqttc_event_on_init_config, mqttc_event_callback);
 }
 
-static bool mqttc_event_callback(esp_mqtt_event_id_t event_id, esp_mqtt_event_handle_t event) //返回true表示消息已处理，无需其它处理
+static  bool mqttc_event_callback(esp_mqtt_event_id_t event_id, esp_mqtt_event_handle_t event) //返回true表示消息已处理，无需其它处理
 {
     switch (event_id)
     {
@@ -51,6 +103,19 @@ static bool mqttc_event_callback(esp_mqtt_event_id_t event_id, esp_mqtt_event_ha
         esp_mqtt_client_subscribe(event->client, (std::string("$sys/")+ONENET_PRODUCT_ID+"/"+ONENET_PRODUCT_DEVICENAME+"/#").c_str(), 0);
         ESP_LOGI(TAG,"OneNET Device is online");
         return true;
+    }
+    break;
+    case MQTT_EVENT_DATA:
+    {
+        try
+        {
+            onejson.OnMQTTMessage(std::string((char *)event->topic,event->topic_len),std::string((char *)event->data,event->data_len));
+        }
+        catch(...)
+        {
+
+        }
+
     }
     break;
     default:
@@ -82,6 +147,9 @@ static void mqttc_event_on_init_config(esp_mqtt_client_config_t *mqtt_cfg)
     mqtt_cfg->client_id = ONENET_PRODUCT_DEVICENAME;
     mqtt_cfg->username = ONENET_PRODUCT_ID;
     mqtt_cfg->password = token.c_str();
+
+    //C++需要大任务栈
+    mqtt_cfg->task_stack=4096;
 
 }
 

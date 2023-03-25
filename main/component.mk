@@ -5,8 +5,11 @@
 COMPONENT_ADD_INCLUDEDIRS := ./
 COMPONENT_SRCDIRS :=  ./
 
-COMPONENT_ADD_INCLUDEDIRS += appstack OneNetToken
-COMPONENT_SRCDIRS +=  appstack OneNetToken
+CFLAGS += --std=gnu11 -Os
+CXXFLAGS += --std=gnu++2a -Wno-range-loop-construct -Os
+
+COMPONENT_ADD_INCLUDEDIRS += appstack OneNet jsoncpp/jsoncpp/include
+COMPONENT_SRCDIRS +=  appstack OneNet jsoncpp/jsoncpp/src/lib_json
 
 #默认RTOS框架中为启用tftp,在此处启用
 COMPONENT_SRCDIRS += tftp
